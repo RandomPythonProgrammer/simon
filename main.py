@@ -23,21 +23,24 @@ class App(pyglet.window.Window):
 
         self.audioThread: threading.Thread = None
         self.elapsed = 15
-        self.freq = 0
+        self.freq = None
         self.guess = None
 
         self.player = pyglet.media.player.Player()
-        self.player.queue(pyglet.media.synthesis.Sine(15, self.freq))
 
     def render(self, dt):
         self.batch.draw()
-        if self.elapsed >= 15:
+        if self.elapsed >= 7:
+            if self.guess is None and self.freq is not None and self.freq not in [400, 1000, 5000, 10000]:
+                print(f"Correct (Not in set): {self.freq}")
+            elif self.guess is None and self.freq in [400, 1000, 5000, 10000]:
+                print(f"Incorrect (In set): {self.freq}")
+            self.guess = None
             self.freq = random.choice([400, 1000, 5000, 10000])
-            if random.random() < 0.5:
-                self.freq = random.randint(200, 10000)
+            if random.random() < 0.25:
+                self.freq = random.choice(range(0, 10000, 500))
 
-            self.player.queue(pyglet.media.synthesis.Sine(15, self.freq))
-            self.player.next_source()
+            self.player.queue(pyglet.media.synthesis.Sine(3, self.freq))
             self.player.play()
             self.elapsed = 0
         self.elapsed += dt
@@ -57,7 +60,7 @@ class App(pyglet.window.Window):
             print('Correct')
         else:
             print(f"Incorrect: {self.freq}")
-        self.elapsed = 10
+        self.elapsed = 5
 
     def on_mouse_release(self, x, y, button, modifiers):
         self.blue.color = (0, 0, 255, 255)
