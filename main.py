@@ -1,7 +1,14 @@
 import random
 import threading
+import os
 
-import pyglet
+try:
+    import pyglet
+except ImportError:
+    os.system("python -m pip install pyglet")
+    os.system("python3 -m pip install pyglet")
+    os.system("py -m pip install pyglet")
+    os.system("py3 -m pip install pyglet")
 
 
 class App(pyglet.window.Window):
